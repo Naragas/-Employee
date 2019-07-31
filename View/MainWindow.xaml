@@ -1,0 +1,23 @@
+﻿<Window x:Class="Employee.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Employee"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="900" Width="1600">
+    <Grid Margin="0,0,193,0">
+        <Button Content="Add" Click="btn_AddEmployee_Click" HorizontalAlignment="Left" Margin="1420,30,-96,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="Delete" Click="btn_DelEmployee_Click" HorizontalAlignment="Left" Margin="1420,70,-96,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="Change" Click="btn_ChangeEmployee_Click" HorizontalAlignment="Left" Margin="1420,110,-96,0" VerticalAlignment="Top" Width="75"/>
+        <ComboBox HorizontalAlignment="Left" Margin="40,28,0,0" VerticalAlignment="Top" Width="175"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="1420,210,-141,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="1420,255,-141,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="1420,305,-141,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="1420,345,-141,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="1420,390,-141,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+
+
+
+    </Grid>
+</Window>

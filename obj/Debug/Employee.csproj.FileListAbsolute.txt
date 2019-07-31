@@ -1,0 +1,16 @@
+D:\GitHub\Employee\bin\Debug\Employee.exe.config
+D:\GitHub\Employee\bin\Debug\Employee.exe
+D:\GitHub\Employee\bin\Debug\Employee.pdb
+D:\GitHub\Employee\obj\Debug\Employee.csprojAssemblyReference.cache
+D:\GitHub\Employee\obj\Debug\MainWindow.g.cs
+D:\GitHub\Employee\obj\Debug\App.g.cs
+D:\GitHub\Employee\obj\Debug\Employee_MarkupCompile.cache
+D:\GitHub\Employee\obj\Debug\Employee_MarkupCompile.lref
+D:\GitHub\Employee\obj\Debug\MainWindow.baml
+D:\GitHub\Employee\obj\Debug\Employee.g.resources
+D:\GitHub\Employee\obj\Debug\Employee.Properties.Resources.resources
+D:\GitHub\Employee\obj\Debug\Employee.csproj.GenerateResource.cache
+D:\GitHub\Employee\obj\Debug\Employee.csproj.CoreCompileInputs.cache
+D:\GitHub\Employee\obj\Debug\Employee.exe
+D:\GitHub\Employee\obj\Debug\Employee.pdb
+D:\GitHub\Employee\obj\Debug\GeneratedInternalTypeHelper.g.cs
