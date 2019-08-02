@@ -7,18 +7,17 @@ using System.Threading.Tasks;
 
 namespace Employee
 {
-    class Department : INotifyPropertyChanged
+    public class Department : INotifyPropertyChanged
     {
-        private string title;
-        private ushort numberOfEmployees;
+        private string _title;
+        
 
-        public ushort NumberOfEmployees { get => numberOfEmployees; set => numberOfEmployees = value; }
         public string Title
         {
-            get => title;
+            get => _title;
             set
             {
-                title = value;
+                _title = value;
                 OnPropertyChanged("Title");
             }
         }
@@ -29,9 +28,23 @@ namespace Employee
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public Department(string Title)
+        public Department()
         {
+         
+        }
+        public Department(string title)
+        {
+            Title = title;
+        }
+        public override string ToString()
+        {
+            return Title;
 
         }
+
+        //public void UpdateDepartment(string title)
+        //{
+        //    Title = title;
+        //}
     }
 }

@@ -1,23 +1,99 @@
-﻿<Window x:Class="Employee.MainWindow"
+﻿<Window x:Class="Employee.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Employee"
+        xmlns:c="clr-namespace:Employee"
+        
+        xmlns:ViewModel ="clr-namespace:Employee.ViewModel"
         mc:Ignorable="d"
+
         Title="MainWindow" Height="900" Width="1600">
-    <Grid Margin="0,0,193,0">
-        <Button Content="Add" Click="btn_AddEmployee_Click" HorizontalAlignment="Left" Margin="1420,30,-96,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="Delete" Click="btn_DelEmployee_Click" HorizontalAlignment="Left" Margin="1420,70,-96,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="Change" Click="btn_ChangeEmployee_Click" HorizontalAlignment="Left" Margin="1420,110,-96,0" VerticalAlignment="Top" Width="75"/>
-        <ComboBox HorizontalAlignment="Left" Margin="40,28,0,0" VerticalAlignment="Top" Width="175"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="1420,210,-141,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="1420,255,-141,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="1420,305,-141,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="1420,345,-141,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="1420,390,-141,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
 
+    <Window.DataContext>
+        <ViewModel:MainWindowViewModel></ViewModel:MainWindowViewModel>
+    </Window.DataContext>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="Converter" />
+        <c:MyMultiConverter x:Key="MyMultiConverter"/>
+    </Window.Resources>
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="400"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <ListBox ItemsSource="{Binding Path=Departments}" SelectedItem="{Binding Path=ChosenDepartment, Mode=TwoWay}" Height="500" Margin="0,0,0,369">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Content="Добавить новый департамент" HorizontalAlignment="Left" Margin="75,677,0,0" VerticalAlignment="Top" Width="225" Command="{Binding DepAddCommand}" CommandParameter="{Binding ElementName=NewDep, Path=Text}"/>
+        <Button Content="Удалить" HorizontalAlignment="Left" Margin="305,510,0,0" VerticalAlignment="Top" Width="75" Command="{Binding DepDeleteCommand}"/>
+        <Button Content="Изменить" HorizontalAlignment="Left" Margin="210,510,0,0" VerticalAlignment="Top" Width="75" Command="{Binding DepChangeCommand}" CommandParameter="{Binding ElementName=NewDep, Path=Text}"/>
+        <TextBox x:Name="NewDep" HorizontalAlignment="Left" Height="80" Margin="65,585,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="245"/>
+        <ComboBox ItemsSource="{Binding Departments}" SelectedItem="{Binding Path=DepartmentToChange}" DisplayMemberPath="Title" HorizontalAlignment="Left" Margin="75,555,0,0" VerticalAlignment="Top" Width="210"/>
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="800" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <DataGrid ItemsSource="{Binding Path=SelectedEmployees}" SelectedItem="{Binding Path=ChosenEmployee, Mode=TwoWay}"></DataGrid>
+            <Viewbox Grid.Column="1" Margin="35,50,47,529" Stretch="Fill">
+                <Grid Height="303" Width="310">
+                    <Button Content="Добавить" HorizontalAlignment="Left" Margin="0,277,0,0" VerticalAlignment="Top" Width="75" Height="26" Command="{Binding EmpAddCommand}">
+                        <Button.CommandParameter>
+                            <MultiBinding Converter="{StaticResource MyMultiConverter}">
+                                <Binding ElementName="EmpName" Path="Text"/>
+                                <Binding ElementName="EmpMiddleName" Path="Text"/>
+                                <Binding ElementName="EmpLastName" Path="Text"/>
+                                <Binding ElementName="EmpAge" Path="Text"/>
+                                <Binding ElementName="EmpSex" Path="Text"/>
+                                <Binding ElementName="EmpDepCB" Path="SelectedItem"/>
+                            </MultiBinding>
+                        </Button.CommandParameter>
+                    </Button>
+                    <Button Content="Изменить" HorizontalAlignment="Left" Margin="115,277,0,0" VerticalAlignment="Top" Width="75" Height="26" Command="{Binding EmpChangeCommand}">
+                        <Button.CommandParameter>
+                            <MultiBinding Converter="{StaticResource MyMultiConverter}">
+                                <Binding ElementName="EmpName" Path="Text"/>
+                                <Binding ElementName="EmpMiddleName" Path="Text"/>
+                                <Binding ElementName="EmpLastName" Path="Text"/>
+                                <Binding ElementName="EmpAge" Path="Text"/>
+                                <Binding ElementName="EmpSex" Path="Text"/>
+                                <Binding ElementName="EmpDepCB" Path="SelectedItem"/>
+                            </MultiBinding>
+                        </Button.CommandParameter>
+                    </Button>
+                    <Button Content="Удалить" HorizontalAlignment="Left" Margin="235,277,0,0" VerticalAlignment="Top" Width="75" Command="{Binding EmpDeleteCommand}" Height="26"/>
+                    <TextBox x:Name="EmpSex" HorizontalAlignment="Left" Height="23" Margin="160,0,0,0" TextWrapping="Wrap" Text="{Binding ChosenEmployee.Sex, Mode=OneWay}" VerticalAlignment="Top" Width="120"/>
+                    <TextBox x:Name="EmpAge" HorizontalAlignment="Left" Height="23" Margin="160,45,0,0" TextWrapping="Wrap" Text="{Binding ChosenEmployee.Age, Mode=OneWay}" VerticalAlignment="Top" Width="120"/>
+                    <TextBox x:Name="EmpLastName" HorizontalAlignment="Left" Height="23" Margin="160,90,0,0" TextWrapping="Wrap" Text="{Binding ChosenEmployee.LastName, Mode=OneWay}" VerticalAlignment="Top" Width="120"/>
+                    <TextBox x:Name="EmpMiddleName" HorizontalAlignment="Left" Height="23" Margin="160,135,0,0" TextWrapping="Wrap" Text="{Binding ChosenEmployee.MiddleName, Mode=OneWay}" VerticalAlignment="Top" Width="120"/>
+                    <TextBox x:Name="EmpName" HorizontalAlignment="Left" Height="23" Margin="160,180,0,0" TextWrapping="Wrap" Text="{Binding ChosenEmployee.Name, Mode=OneWay}" VerticalAlignment="Top" Width="120"/>
+                    <ComboBox 
+                        x:Name="EmpDepCB" 
+                        ItemsSource="{Binding Departments}" 
+                        SelectedItem="{Binding ChosenEmployee.Department, Mode=OneWay}"
+                        DisplayMemberPath="Title"
+                        HorizontalAlignment="Left" 
+                        Margin="160,228,0,0" 
+                        VerticalAlignment="Top" 
+                        Width="140"
+                        />
+                    <Label Content="Пол сотрудника" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <Label Content="Возраст сотрудника" HorizontalAlignment="Left" Margin="0,45,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Фамилия сотрудника" HorizontalAlignment="Left" Margin="0,90,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Отчество сотрудника" HorizontalAlignment="Left" Margin="0,135,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Имя сотрудника" HorizontalAlignment="Left" Margin="0,180,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Департамент" HorizontalAlignment="Left" Margin="0,228,0,0" VerticalAlignment="Top"/>
 
+                </Grid>
+            </Viewbox>
 
+        </Grid>
+
+        <!--<ComboBox ItemsSource="{Binding Departments}" HorizontalAlignment="Left" Margin="20,555,0,0" VerticalAlignment="Top" Width="330"/>-->
     </Grid>
 </Window>

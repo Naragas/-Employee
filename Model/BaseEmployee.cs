@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Employee
 {
-    class BaseEmployee : INotifyPropertyChanged
+    public class BaseEmployee : INotifyPropertyChanged
     {
         private string name;
         private string middleName;
@@ -40,7 +40,7 @@ namespace Employee
                 OnPropertyChanged("Sex");
             }
         }
-        public string Lastname
+        public string LastName
         {
             get => lastName;
             set
@@ -84,9 +84,36 @@ namespace Employee
         }
         public BaseEmployee(string Name, string MiddleName, string LastName, byte Age, string Sex)
         {
-
+            this.Name = Name;
+            this.MiddleName = MiddleName;
+            this.LastName = LastName;
+            this.Age =Age;
+            this.Sex = Sex;
+        }
+        public BaseEmployee(string Name, string MiddleName, string LastName, byte Age, string Sex, Department departmen)
+        {
+            this.Name = Name;
+            this.MiddleName = MiddleName;
+            this.LastName = LastName;
+            this.Age = Age;
+            this.Sex = Sex;
+            this.Department = departmen;
         }
 
-
+        public void UpdateEmployee(string name, string middleName, string lastName, byte age, string sex, Department department)
+        {
+            Name = name;
+            MiddleName = middleName;
+            LastName = lastName;
+            Age = age;
+            Sex = sex;
+            Department = department;
+        }
+        public string SaveDataToBase()
+        {
+            string s;
+            s = $"{Name},{MiddleName},{LastName},{Sex},{Age},{Department.Title}";
+            return s;
+        }
     }
 }

@@ -1,0 +1,15 @@
+D:\GitHub\Employee\bin\Release\Employee.exe.config
+D:\GitHub\Employee\bin\Release\Employee.exe
+D:\GitHub\Employee\bin\Release\Employee.pdb
+D:\GitHub\Employee\obj\Release\View\MainWindow.g.cs
+D:\GitHub\Employee\obj\Release\App.g.cs
+D:\GitHub\Employee\obj\Release\GeneratedInternalTypeHelper.g.cs
+D:\GitHub\Employee\obj\Release\Employee_MarkupCompile.cache
+D:\GitHub\Employee\obj\Release\Employee_MarkupCompile.lref
+D:\GitHub\Employee\obj\Release\View\MainWindow.baml
+D:\GitHub\Employee\obj\Release\Employee.g.resources
+D:\GitHub\Employee\obj\Release\Employee.Properties.Resources.resources
+D:\GitHub\Employee\obj\Release\Employee.csproj.GenerateResource.cache
+D:\GitHub\Employee\obj\Release\Employee.csproj.CoreCompileInputs.cache
+D:\GitHub\Employee\obj\Release\Employee.exe
+D:\GitHub\Employee\obj\Release\Employee.pdb

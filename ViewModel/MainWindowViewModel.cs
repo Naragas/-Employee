@@ -1,0 +1,202 @@
+﻿using System;
+using static Employee.ViewModel.DelegateCommand;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Globalization;
+using System.Windows.Input;
+using System.Windows;
+
+namespace Employee.ViewModel
+{
+
+    public class MainWindowViewModel : INotifyPropertyChanged
+    {
+        private MyMultiConverter myMultiConverter;
+        Model.ModelData dt = new Model.ModelData();
+        private Department _chosenDepartment;
+        private Department departmentToChange;
+        private BaseEmployee chosenEmployee;
+        private ObservableCollection<BaseEmployee> selectedEmployees;
+
+        public ICommand DepDeleteCommand { get; private set; }
+        public ICommand EmpDeleteCommand { get; private set; }
+        public ICommand EmpAddCommand { get; private set; }
+        public ICommand EmpChangeCommand { get; private set; }
+
+        public Department ChosenDepartment
+        {
+            get { return _chosenDepartment; }
+            set
+            {
+                _chosenDepartment = value;
+                SelectedEmployees = dt.ChoseEmployeeByDepartment(_chosenDepartment);
+                OnPropertyChanged("SelectedDepartment");
+            }
+        }
+        public Department DepartmentToChange
+        {
+            get { return departmentToChange; }
+            set
+            {
+                departmentToChange = value;
+                OnPropertyChanged("DepartmentToChange");
+            }
+        }
+
+        public BaseEmployee ChosenEmployee
+        {
+            get { return chosenEmployee; }
+            set
+            {
+                chosenEmployee = value;
+                OnPropertyChanged("ChosenEmployee");
+            }
+        }
+
+        public MainWindowViewModel()
+        {
+            DepDeleteCommand = new DelegateCommand(DeleteDepartment);
+            EmpDeleteCommand = new DelegateCommand(DeleteEmployee);
+            EmpAddCommand = new DelegateCommand(AddEmployee);
+            EmpChangeCommand = new DelegateCommand(ChangeEmployee);
+            LoadData();
+        }
+        private void DeleteDepartment(object obj)
+        {
+            for (int i = SelectedEmployees.Count - 1; i >= 0; i--)
+            {
+                Employees.Remove(SelectedEmployees[i]);
+            }
+            Departments.Remove(_chosenDepartment);
+
+            SaveData();
+        }
+        private void DeleteEmployee(object obj)
+        {
+            Employees.Remove(ChosenEmployee);
+            SaveData();
+            SelectedEmployees = dt.ChoseEmployeeByDepartment(_chosenDepartment);
+        }
+
+        private void AddEmployee(object obj)
+        {
+            object[] data = (object[])obj;
+            var (name, middleName, lastName, age, sex, department, isValid, message) = ValidateData(data);
+
+            if (!isValid)
+            {
+                MessageBox.Show(message, "Data error", MessageBoxButton.OK);
+
+                return;
+            }
+            dt.AddEmployee((name, middleName, lastName, age, sex, department));
+        }
+        private void ChangeEmployee(object obj)
+        {
+            object[] data = (object[])obj;
+            var (name, middleName, lastName, age, sex, department, isValid, message) = ValidateData(data);
+
+            if (!isValid)
+            {
+                MessageBox.Show(message, "Data error", MessageBoxButton.OK);
+
+                return;
+            }
+            dt.ChangeEmployee((name, middleName, lastName, age, sex, department), chosenEmployee);
+        }
+        private (string name, string middleName, string lastName, byte age, string sex, Department department, bool isValid, string message) ValidateData(object[] values)
+        {
+            var message = new StringBuilder();
+            var isValid = true;
+
+            var name = values[0].ToString();
+            if (name.Length == 0)
+            {
+                isValid = false;
+                message.AppendLine("Invalid name");
+            }
+            var middleName = values[1].ToString();
+            if (middleName.Length == 0)
+            {
+                isValid = false;
+                message.AppendLine("Invalid middleName");
+            }
+            var lastName = values[2].ToString();
+            if (lastName.Length == 0)
+            {
+                isValid = false;
+                message.AppendLine("Invalid lastName");
+            }
+
+            if (!byte.TryParse(values[3].ToString(), out byte age) || age < 18)
+            {
+                isValid = false;
+                message.AppendLine("Age cant be lower 18");
+            }
+            var sex = values[4].ToString();
+            if (!sex.Equals("Мужской") && !sex.Equals("Женский"))
+            {
+                isValid = false;
+                message.AppendLine("Invalid sex");
+            }
+            var department = values[5] as Department;
+
+            return (name, middleName, lastName, age, sex, department, isValid, message.ToString());
+        }
+
+        private void LoadData()
+        {
+            Departments = new ObservableCollection<Department>(dt.Departments);
+            Employees = new ObservableCollection<BaseEmployee>(dt.Employees);
+        }
+        private void SaveData()
+        {
+            dt.SaveDepartments(Departments);
+            dt.SaveEmployees(Employees);
+            LoadData();
+        }
+
+
+
+        public ObservableCollection<Department> Departments { get; private set; } = new ObservableCollection<Department>() { };
+        public ObservableCollection<BaseEmployee> Employees { get; private set; } = new ObservableCollection<BaseEmployee>() { };
+        public ObservableCollection<BaseEmployee> SelectedEmployees
+        {
+            get { return selectedEmployees; }
+            set
+            {
+                selectedEmployees = value;
+                OnPropertyChanged("SelectedEmployees");
+            }
+        }
+
+        public MyMultiConverter MultiConverter { get => myMultiConverter; set => myMultiConverter = value; }
+
+
+        //private void AddDepartmentAction(object obj)
+        //{
+        //    Department Department = new Department("");
+
+        //}
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        //public void AddEmployee(BaseEmployee employee)
+        //{
+        //    var Empl = dt.AddEmployee(employee);
+        //    /// Employees.Insert(0, Empl);
+
+        //    Employees = new ObservableCollection<BaseEmployee>(dt.Employees);
+        //}
+
+    }
+}

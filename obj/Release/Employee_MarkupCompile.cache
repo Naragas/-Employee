@@ -4,15 +4,15 @@
 winexe
 C#
 .cs
-D:\GitHub\Employee\obj\Debug\
+D:\GitHub\Employee\obj\Release\
 Employee
 none
 false
-DEBUG;TRACE
+TRACE
 D:\GitHub\Employee\App.xaml
 1-1711142684
 
-13-202792304
+9-1654637524
 13152784993
 View\MainWindow.xaml;
 

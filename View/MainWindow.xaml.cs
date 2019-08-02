@@ -1,4 +1,5 @@
 ﻿using System;
+using Employee.ViewModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Employee
+namespace Employee.View
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
@@ -25,39 +26,5 @@ namespace Employee
             InitializeComponent();
         }
 
-        private void mi_AddEmployee_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void mi_Exit_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void mi_DeleteEmployee_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void mi_About_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void btn_AddEmployee_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void btn_DelEmployee_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void btn_ChangeEmployee_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

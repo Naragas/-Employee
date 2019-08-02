@@ -64,9 +64,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\BaseEmployee.cs" />
-    <Compile Include="Model\data.cs" />
+    <Compile Include="Model\ModelData.cs" />
     <Compile Include="Model\Department.cs" />
-    <Compile Include="ViewModel\ViewModel.cs" />
+    <Compile Include="DelegateCommand.cs" />
+    <Compile Include="MyMultiConverter.cs" />
+    <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -98,6 +100,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Properties\Departments.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Properties\Employees.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
