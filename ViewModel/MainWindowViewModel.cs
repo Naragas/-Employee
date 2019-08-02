@@ -218,6 +218,11 @@ namespace Employee.ViewModel
                 message.AppendLine("Invalid sex");
             }
             var department = values[5] as Department;
+            if (department == null)
+            {
+                isValid = false;
+                message.AppendLine("Invalid department");
+            }
 
             return (name, middleName, lastName, age, sex, department, isValid, message.ToString());
         }
