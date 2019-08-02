@@ -1,5 +1,5 @@
 ﻿using System;
-using static Employee.ViewModel.DelegateCommand;
+
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -16,17 +16,22 @@ namespace Employee.ViewModel
 
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        private MyMultiConverter myMultiConverter;
+
         Model.ModelData dt = new Model.ModelData();
         private Department _chosenDepartment;
         private Department departmentToChange;
         private BaseEmployee chosenEmployee;
+        private ObservableCollection<Department> departments;
         private ObservableCollection<BaseEmployee> selectedEmployees;
 
+        //Список команд.
+        public ICommand DepAddCommand { get; private set; }
         public ICommand DepDeleteCommand { get; private set; }
+        public ICommand DepChangeCommand { get; private set; }
         public ICommand EmpDeleteCommand { get; private set; }
         public ICommand EmpAddCommand { get; private set; }
         public ICommand EmpChangeCommand { get; private set; }
+
 
         public Department ChosenDepartment
         {
@@ -34,7 +39,7 @@ namespace Employee.ViewModel
             set
             {
                 _chosenDepartment = value;
-                SelectedEmployees = dt.ChoseEmployeeByDepartment(_chosenDepartment);
+                GetSelectedEmployees();
                 OnPropertyChanged("SelectedDepartment");
             }
         }
@@ -60,14 +65,53 @@ namespace Employee.ViewModel
 
         public MainWindowViewModel()
         {
+            DepAddCommand = new DelegateCommand(AddDepartment);
+            EmpAddCommand = new DelegateCommand(AddEmployee);
             DepDeleteCommand = new DelegateCommand(DeleteDepartment);
             EmpDeleteCommand = new DelegateCommand(DeleteEmployee);
-            EmpAddCommand = new DelegateCommand(AddEmployee);
+            DepChangeCommand = new DelegateCommand(ChangeDepartment);
             EmpChangeCommand = new DelegateCommand(ChangeEmployee);
+
             LoadData();
         }
+        /// <summary>
+        /// Метод изменения департамена, выбранного в ComboBox
+        /// </summary>
+        /// <param name="obj">Название нового департамента</param>
+        private void ChangeDepartment(object obj)
+        {
+            dt.ChangeDepartment(DepartmentToChange, (string)obj);
+            LoadData();
+        }
+        /// <summary>
+        /// Метод добавления департамента.
+        /// </summary>
+        /// <param name="obj">Название нового департамента</param>
+        private void AddDepartment(object obj)
+        {
+            string s = (string)obj;
+            bool isContain = false;
+
+            //Проверка на наличие департамента с таким же названием
+            foreach (Department d in Departments)
+            {
+                if (d.Title.Equals(s))
+                {
+                    isContain = true;
+                }
+            }
+
+            if (!isContain) dt.AddDepartment(s);
+            LoadData();
+           
+        }
+        /// <summary>
+        /// Метод удаления выбранного в ListBox департамента
+        /// </summary>
+        /// <param name="obj"></param>
         private void DeleteDepartment(object obj)
         {
+            //Удаление всех работников выбранного департамента.
             for (int i = SelectedEmployees.Count - 1; i >= 0; i--)
             {
                 Employees.Remove(SelectedEmployees[i]);
@@ -76,16 +120,25 @@ namespace Employee.ViewModel
 
             SaveData();
         }
+        /// <summary>
+        /// Метод удаления работника
+        /// </summary>
+        /// <param name="obj"></param>
         private void DeleteEmployee(object obj)
         {
             Employees.Remove(ChosenEmployee);
             SaveData();
-            SelectedEmployees = dt.ChoseEmployeeByDepartment(_chosenDepartment);
+            GetSelectedEmployees();
         }
 
+        /// <summary>
+        /// Метод добавления нового сотрудника
+        /// </summary>
+        /// <param name="obj">Массив объектов полученного из MultiBinder</param>
         private void AddEmployee(object obj)
         {
             object[] data = (object[])obj;
+            //Создание кортежа после проверки всех данных на корректность
             var (name, middleName, lastName, age, sex, department, isValid, message) = ValidateData(data);
 
             if (!isValid)
@@ -95,7 +148,20 @@ namespace Employee.ViewModel
                 return;
             }
             dt.AddEmployee((name, middleName, lastName, age, sex, department));
+            GetSelectedEmployees();
+
         }
+        /// <summary>
+        /// Метод получения списка сотрудников выбранного департамента
+        /// </summary>
+        private void GetSelectedEmployees()
+        {
+            SelectedEmployees = dt.ChoseEmployeeByDepartment(_chosenDepartment);
+        }
+        /// <summary>
+        /// Метод изменения данных сотрудника
+        /// </summary>
+        /// <param name="obj">Массив объектов полученного из MultiBinder</param>
         private void ChangeEmployee(object obj)
         {
             object[] data = (object[])obj;
@@ -107,8 +173,15 @@ namespace Employee.ViewModel
 
                 return;
             }
-            dt.ChangeEmployee((name, middleName, lastName, age, sex, department), chosenEmployee);
+            dt.ChangeEmployee((name, middleName, lastName, age, sex, department), ChosenEmployee);
+            GetSelectedEmployees();
         }
+
+        /// <summary>
+        /// Метод проверки введенных данных на корректность
+        /// </summary>
+        /// <param name="values">Массив Объектов</param>
+        /// <returns></returns>
         private (string name, string middleName, string lastName, byte age, string sex, Department department, bool isValid, string message) ValidateData(object[] values)
         {
             var message = new StringBuilder();
@@ -148,12 +221,17 @@ namespace Employee.ViewModel
 
             return (name, middleName, lastName, age, sex, department, isValid, message.ToString());
         }
-
+        /// <summary>
+        /// Метод запроса данных из Модели
+        /// </summary>
         private void LoadData()
         {
             Departments = new ObservableCollection<Department>(dt.Departments);
             Employees = new ObservableCollection<BaseEmployee>(dt.Employees);
         }
+        /// <summary>
+        /// Метод записи данных в Модель
+        /// </summary>
         private void SaveData()
         {
             dt.SaveDepartments(Departments);
@@ -163,8 +241,18 @@ namespace Employee.ViewModel
 
 
 
-        public ObservableCollection<Department> Departments { get; private set; } = new ObservableCollection<Department>() { };
+        public ObservableCollection<Department> Departments
+        {
+            get { return departments; }
+            private set
+            {
+                departments = value;
+                OnPropertyChanged("Departments");
+            }
+        } 
+
         public ObservableCollection<BaseEmployee> Employees { get; private set; } = new ObservableCollection<BaseEmployee>() { };
+
         public ObservableCollection<BaseEmployee> SelectedEmployees
         {
             get { return selectedEmployees; }
@@ -175,28 +263,11 @@ namespace Employee.ViewModel
             }
         }
 
-        public MyMultiConverter MultiConverter { get => myMultiConverter; set => myMultiConverter = value; }
-
-
-        //private void AddDepartmentAction(object obj)
-        //{
-        //    Department Department = new Department("");
-
-        //}
-
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        //public void AddEmployee(BaseEmployee employee)
-        //{
-        //    var Empl = dt.AddEmployee(employee);
-        //    /// Employees.Insert(0, Empl);
-
-        //    Employees = new ObservableCollection<BaseEmployee>(dt.Employees);
-        //}
 
     }
 }

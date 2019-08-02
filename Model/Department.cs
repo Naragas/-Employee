@@ -42,9 +42,9 @@ namespace Employee
 
         }
 
-        //public void UpdateDepartment(string title)
-        //{
-        //    Title = title;
-        //}
+        public void UpdateDepartment(string title)
+        {
+            Title = title;
+        }
     }
 }

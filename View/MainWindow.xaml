@@ -23,16 +23,16 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <ListBox ItemsSource="{Binding Path=Departments}" SelectedItem="{Binding Path=ChosenDepartment, Mode=TwoWay}" Height="500" Margin="0,0,0,369">
-            <ListBox.ItemTemplate>
+            <!--<ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Path=Title}"></TextBlock>
                 </DataTemplate>
-            </ListBox.ItemTemplate>
+            </ListBox.ItemTemplate>-->
         </ListBox>
         <Button Content="Добавить новый департамент" HorizontalAlignment="Left" Margin="75,677,0,0" VerticalAlignment="Top" Width="225" Command="{Binding DepAddCommand}" CommandParameter="{Binding ElementName=NewDep, Path=Text}"/>
         <Button Content="Удалить" HorizontalAlignment="Left" Margin="305,510,0,0" VerticalAlignment="Top" Width="75" Command="{Binding DepDeleteCommand}"/>
         <Button Content="Изменить" HorizontalAlignment="Left" Margin="210,510,0,0" VerticalAlignment="Top" Width="75" Command="{Binding DepChangeCommand}" CommandParameter="{Binding ElementName=NewDep, Path=Text}"/>
-        <TextBox x:Name="NewDep" HorizontalAlignment="Left" Height="80" Margin="65,585,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="245"/>
+        <TextBox x:Name="NewDep" HorizontalAlignment="Left" Height="80" Margin="65,585,0,0" TextWrapping="Wrap" Text="{Binding ChosenDepartment}" VerticalAlignment="Top" Width="245"/>
         <ComboBox ItemsSource="{Binding Departments}" SelectedItem="{Binding Path=DepartmentToChange}" DisplayMemberPath="Title" HorizontalAlignment="Left" Margin="75,555,0,0" VerticalAlignment="Top" Width="210"/>
         <Grid Grid.Column="1">
             <Grid.ColumnDefinitions>
