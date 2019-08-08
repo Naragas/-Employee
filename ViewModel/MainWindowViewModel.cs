@@ -173,7 +173,11 @@ namespace Employee.ViewModel
 
                 return;
             }
-            dt.ChangeEmployee((name, middleName, lastName, age, sex, department), ChosenEmployee);
+            if (ChosenEmployee != null)
+            {
+                dt.ChangeEmployee((name, middleName, lastName, age, sex, department), ChosenEmployee);
+            }
+            
             GetSelectedEmployees();
         }
 
