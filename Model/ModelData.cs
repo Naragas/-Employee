@@ -27,7 +27,7 @@ namespace Employee.Model
         
 
         public List<BaseEmployee> Employees { get; private set; } = new List<BaseEmployee>() { };
-        public List<Department> Departments { get; private set; } = new List<Department>() { };
+        public List<BaseDepartment> Departments { get; private set; } = new List<BaseDepartment>() { };
 
         public ModelData()
         {
@@ -68,7 +68,7 @@ namespace Employee.Model
         /// Метод сохранения списка департаментов
         /// </summary>
         /// <param name="List">ObservableCollection департаментов</param>
-        public void SaveDepartments(ObservableCollection<Department> List)
+        public void SaveDepartments(ObservableCollection<BaseDepartment> List)
         {            
             using (StreamWriter sw = new StreamWriter(departmentsPath, false, System.Text.Encoding.Default))
             {
@@ -83,7 +83,7 @@ namespace Employee.Model
         /// Метод сохранения списка департаментов
         /// </summary>
         /// <param name="List">List департаментов</param>
-        public void SaveDepartments(List<Department> List)
+        public void SaveDepartments(List<BaseDepartment> List)
         {
             using (StreamWriter sw = new StreamWriter(departmentsPath, false, System.Text.Encoding.Default))
             {
@@ -99,7 +99,7 @@ namespace Employee.Model
         /// </summary>
         /// <param name="departmentToChange">Департамент выбранный для изменения</param>
         /// <param name="obj">Парамент нового названия департамента</param>
-        internal void ChangeDepartment(Department departmentToChange, string obj)
+        internal void ChangeDepartment(BaseDepartment departmentToChange, string obj)
         {
             if (Departments.Contains(departmentToChange))
             {
@@ -144,7 +144,7 @@ namespace Employee.Model
         /// </summary>
         /// <param name="sdep">Выбранный департамент</param>
         /// <returns></returns>
-        public ObservableCollection<BaseEmployee> ChoseEmployeeByDepartment(Department sdep)
+        public ObservableCollection<BaseEmployee> ChoseEmployeeByDepartment(BaseDepartment sdep)
         {
             ObservableCollection<BaseEmployee> s = new ObservableCollection<BaseEmployee>();
             if (sdep != null)
@@ -162,7 +162,7 @@ namespace Employee.Model
         /// </summary>
         /// <param name="tuple">Кортеж с параметрами</param>
         /// <param name="chosenEmployee">Работник данные которого должны измениться</param>
-        internal void ChangeEmployee((string name, string middleName, string lastName, byte age, string sex, Department department) tuple, BaseEmployee chosenEmployee)
+        internal void ChangeEmployee((string name, string middleName, string lastName, byte age, string sex, BaseDepartment department) tuple, BaseEmployee chosenEmployee)
         {
             Employees[Employees.IndexOf(chosenEmployee)] = new BaseEmployee(tuple.name, tuple.middleName, tuple.lastName, tuple.age, tuple.sex, tuple.department);
             SaveEmployees(Employees);
@@ -171,7 +171,7 @@ namespace Employee.Model
         /// Метод добавления нового сотрудника
         /// </summary>
         /// <param name="tuple">Кортеж с параметрами</param>
-        public void AddEmployee((string name, string middleName, string lastName, byte age, string sex, Department department) tuple)
+        public void AddEmployee((string name, string middleName, string lastName, byte age, string sex, BaseDepartment department) tuple)
         {
             Employees.Add( new BaseEmployee(tuple.name,tuple.middleName,tuple.lastName,tuple.age,tuple.sex,tuple.department));
             SaveEmployees(Employees);
@@ -183,7 +183,7 @@ namespace Employee.Model
         /// <param name="obj">Название</param>
         public void AddDepartment(string obj)
         {
-            Departments.Add(new Department(obj));
+            Departments.Add(new BaseDepartment(obj));
             SaveDepartments(Departments);
 
         }
@@ -196,7 +196,7 @@ namespace Employee.Model
             Departments.Clear();
             foreach (string s in GetDataFormFile(path))
             {                
-                Departments.Add(new Department(s));
+                Departments.Add(new BaseDepartment(s));
             }
         }
         

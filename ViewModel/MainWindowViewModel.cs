@@ -18,10 +18,10 @@ namespace Employee.ViewModel
     {
 
         Model.ModelData dt = new Model.ModelData();
-        private Department _chosenDepartment;
-        private Department departmentToChange;
+        private BaseDepartment _chosenDepartment;
+        private BaseDepartment departmentToChange;
         private BaseEmployee chosenEmployee;
-        private ObservableCollection<Department> departments;
+        private ObservableCollection<BaseDepartment> departments;
         private ObservableCollection<BaseEmployee> selectedEmployees;
 
         //Список команд.
@@ -33,7 +33,7 @@ namespace Employee.ViewModel
         public ICommand EmpChangeCommand { get; private set; }
 
 
-        public Department ChosenDepartment
+        public BaseDepartment ChosenDepartment
         {
             get { return _chosenDepartment; }
             set
@@ -43,7 +43,7 @@ namespace Employee.ViewModel
                 OnPropertyChanged("SelectedDepartment");
             }
         }
-        public Department DepartmentToChange
+        public BaseDepartment DepartmentToChange
         {
             get { return departmentToChange; }
             set
@@ -93,7 +93,7 @@ namespace Employee.ViewModel
             bool isContain = false;
 
             //Проверка на наличие департамента с таким же названием
-            foreach (Department d in Departments)
+            foreach (BaseDepartment d in Departments)
             {
                 if (d.Title.Equals(s))
                 {
@@ -182,7 +182,7 @@ namespace Employee.ViewModel
         /// </summary>
         /// <param name="values">Массив Объектов</param>
         /// <returns></returns>
-        private (string name, string middleName, string lastName, byte age, string sex, Department department, bool isValid, string message) ValidateData(object[] values)
+        private (string name, string middleName, string lastName, byte age, string sex, BaseDepartment department, bool isValid, string message) ValidateData(object[] values)
         {
             var message = new StringBuilder();
             var isValid = true;
@@ -217,7 +217,7 @@ namespace Employee.ViewModel
                 isValid = false;
                 message.AppendLine("Invalid sex");
             }
-            var department = values[5] as Department;
+            var department = values[5] as BaseDepartment;
             if (department == null)
             {
                 isValid = false;
@@ -231,7 +231,7 @@ namespace Employee.ViewModel
         /// </summary>
         private void LoadData()
         {
-            Departments = new ObservableCollection<Department>(dt.Departments);
+            Departments = new ObservableCollection<BaseDepartment>(dt.Departments);
             Employees = new ObservableCollection<BaseEmployee>(dt.Employees);
         }
         /// <summary>
@@ -246,7 +246,7 @@ namespace Employee.ViewModel
 
 
 
-        public ObservableCollection<Department> Departments
+        public ObservableCollection<BaseDepartment> Departments
         {
             get { return departments; }
             private set

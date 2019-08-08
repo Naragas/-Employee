@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Employee
 {
-    public class Department : INotifyPropertyChanged
+    public class BaseDepartment : INotifyPropertyChanged
     {
         private string _title;
         
@@ -28,11 +28,11 @@ namespace Employee
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public Department()
+        public BaseDepartment()
         {
          
         }
-        public Department(string title)
+        public BaseDepartment(string title)
         {
             Title = title;
         }

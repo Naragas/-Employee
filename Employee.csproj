@@ -81,7 +81,7 @@
     </Compile>
     <Compile Include="Model\BaseEmployee.cs" />
     <Compile Include="Model\ModelData.cs" />
-    <Compile Include="Model\Department.cs" />
+    <Compile Include="Model\BaseDepartment.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="MyMultiConverter.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

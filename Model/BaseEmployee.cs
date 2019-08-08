@@ -14,7 +14,7 @@ namespace Employee
         private string lastName;
         private byte age;
         private string sex;
-        private Department department;
+        private BaseDepartment department;
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
@@ -68,7 +68,7 @@ namespace Employee
             }
         }
 
-        public Department Department
+        public BaseDepartment Department
         {
             get => department;
             set
@@ -90,7 +90,7 @@ namespace Employee
             this.Age =Age;
             this.Sex = Sex;
         }
-        public BaseEmployee(string Name, string MiddleName, string LastName, byte Age, string Sex, Department departmen)
+        public BaseEmployee(string Name, string MiddleName, string LastName, byte Age, string Sex, BaseDepartment departmen)
         {
             this.Name = Name;
             this.MiddleName = MiddleName;
@@ -100,7 +100,7 @@ namespace Employee
             this.Department = departmen;
         }
 
-        public void UpdateEmployee(string name, string middleName, string lastName, byte age, string sex, Department department)
+        public void UpdateEmployee(string name, string middleName, string lastName, byte age, string sex, BaseDepartment department)
         {
             Name = name;
             MiddleName = middleName;
