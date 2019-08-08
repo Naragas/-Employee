@@ -10,19 +10,23 @@ using System.Windows.Data;
 using System.Globalization;
 using System.Windows.Input;
 using System.Windows;
+using Employee.Model;
+using System.Runtime.Remoting.Contexts;
+using System.Data.Entity;
 
 namespace Employee.ViewModel
 {
 
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-
-        Model.ModelData dt = new Model.ModelData();
-        private BaseDepartment _chosenDepartment;
-        private BaseDepartment departmentToChange;
-        private BaseEmployee chosenEmployee;
-        private ObservableCollection<BaseDepartment> departments;
-        private ObservableCollection<BaseEmployee> selectedEmployees;
+        Model.EmployeeEntities emDB = new Model.EmployeeEntities();
+        //Model.ModelData dt = new Model.ModelData();
+        private Department _chosenDepartment;
+        private Department departmentToChange;
+        private Model.Employee chosenEmployee;
+        private ObservableCollection<Department> departments;
+        private ObservableCollection<Model.Employee> selectedEmployees = new ObservableCollection<Model.Employee>();
+        
 
         //Список команд.
         public ICommand DepAddCommand { get; private set; }
@@ -33,7 +37,7 @@ namespace Employee.ViewModel
         public ICommand EmpChangeCommand { get; private set; }
 
 
-        public BaseDepartment ChosenDepartment
+        public Department ChosenDepartment
         {
             get { return _chosenDepartment; }
             set
@@ -43,7 +47,7 @@ namespace Employee.ViewModel
                 OnPropertyChanged("SelectedDepartment");
             }
         }
-        public BaseDepartment DepartmentToChange
+        public Department DepartmentToChange
         {
             get { return departmentToChange; }
             set
@@ -53,7 +57,7 @@ namespace Employee.ViewModel
             }
         }
 
-        public BaseEmployee ChosenEmployee
+        public Model.Employee ChosenEmployee
         {
             get { return chosenEmployee; }
             set
@@ -80,8 +84,11 @@ namespace Employee.ViewModel
         /// <param name="obj">Название нового департамента</param>
         private void ChangeDepartment(object obj)
         {
-            dt.ChangeDepartment(DepartmentToChange, (string)obj);
+            DepartmentToChange.Title = (string)obj;
+            EmDB.Entry(DepartmentToChange).State = EntityState.Modified;
+            emDB.SaveChanges();
             LoadData();
+            GetSelectedEmployees();
         }
         /// <summary>
         /// Метод добавления департамента.
@@ -90,10 +97,10 @@ namespace Employee.ViewModel
         private void AddDepartment(object obj)
         {
             string s = (string)obj;
-            bool isContain = false;
+            bool isContain = false;           
 
-            //Проверка на наличие департамента с таким же названием
-            foreach (BaseDepartment d in Departments)
+            //проверка на наличие департамента с таким же названием
+            foreach (Department d in emDB.Departments)
             {
                 if (d.Title.Equals(s))
                 {
@@ -101,9 +108,13 @@ namespace Employee.ViewModel
                 }
             }
 
-            if (!isContain) dt.AddDepartment(s);
+            if (!isContain)
+            {
+                emDB.Departments.Add(new Department() { Title = s.Trim() });
+                emDB.SaveChanges();
+            }
             LoadData();
-           
+
         }
         /// <summary>
         /// Метод удаления выбранного в ListBox департамента
@@ -114,11 +125,13 @@ namespace Employee.ViewModel
             //Удаление всех работников выбранного департамента.
             for (int i = SelectedEmployees.Count - 1; i >= 0; i--)
             {
-                Employees.Remove(SelectedEmployees[i]);
+                emDB.Employees.Remove(SelectedEmployees[i]);
             }
-            Departments.Remove(_chosenDepartment);
+            EmDB.Departments.Remove(_chosenDepartment);
+            emDB.SaveChanges();
+            LoadData();
 
-            SaveData();
+
         }
         /// <summary>
         /// Метод удаления работника
@@ -126,8 +139,8 @@ namespace Employee.ViewModel
         /// <param name="obj"></param>
         private void DeleteEmployee(object obj)
         {
-            Employees.Remove(ChosenEmployee);
-            SaveData();
+            emDB.Employees.Remove(ChosenEmployee);
+            emDB.SaveChanges();
             GetSelectedEmployees();
         }
 
@@ -139,7 +152,7 @@ namespace Employee.ViewModel
         {
             object[] data = (object[])obj;
             //Создание кортежа после проверки всех данных на корректность
-            var (name, middleName, lastName, age, sex, department, isValid, message) = ValidateData(data);
+            var (id,name, middleName, lastName, age, sex, department, isValid, message) = ValidateData(data);
 
             if (!isValid)
             {
@@ -147,8 +160,13 @@ namespace Employee.ViewModel
 
                 return;
             }
-            dt.AddEmployee((name, middleName, lastName, age, sex, department));
+
+            emDB.Employees.Add(new Model.Employee() { Name = name.Trim(), MiddleName = middleName.Trim(), LastName = lastName.Trim(), Sex = sex.Trim(), Age = age, Department = department.Dep_Id });
+            emDB.SaveChanges();
             GetSelectedEmployees();
+            
+
+
 
         }
         /// <summary>
@@ -156,7 +174,20 @@ namespace Employee.ViewModel
         /// </summary>
         private void GetSelectedEmployees()
         {
-            SelectedEmployees = dt.ChoseEmployeeByDepartment(_chosenDepartment);
+            if (ChosenDepartment != null)
+            {
+                var q = emDB.Employees.Where(x => x.Department == ChosenDepartment.Dep_Id);
+
+                SelectedEmployees?.Clear();
+                foreach (var item in q)
+                {
+                    SelectedEmployees.Add(item);
+                }
+            }
+            else
+            {
+                SelectedEmployees.Clear();
+            }
         }
         /// <summary>
         /// Метод изменения данных сотрудника
@@ -165,7 +196,7 @@ namespace Employee.ViewModel
         private void ChangeEmployee(object obj)
         {
             object[] data = (object[])obj;
-            var (name, middleName, lastName, age, sex, department, isValid, message) = ValidateData(data);
+            var (id,name, middleName, lastName, age, sex, department, isValid, message) = ValidateData(data);
 
             if (!isValid)
             {
@@ -175,7 +206,16 @@ namespace Employee.ViewModel
             }
             if (ChosenEmployee != null)
             {
-                dt.ChangeEmployee((name, middleName, lastName, age, sex, department), ChosenEmployee);
+                ChosenEmployee.Name = name.Trim();
+                ChosenEmployee.MiddleName = middleName.Trim();
+                ChosenEmployee.LastName = lastName.Trim();
+                ChosenEmployee.Age = age;
+                ChosenEmployee.Sex = sex.Trim();
+                ChosenEmployee.Department1 = department;
+
+                emDB.Entry(ChosenEmployee).State = EntityState.Modified;
+                emDB.SaveChanges();
+                
             }
             
             GetSelectedEmployees();
@@ -186,71 +226,77 @@ namespace Employee.ViewModel
         /// </summary>
         /// <param name="values">Массив Объектов</param>
         /// <returns></returns>
-        private (string name, string middleName, string lastName, byte age, string sex, BaseDepartment department, bool isValid, string message) ValidateData(object[] values)
+        private (int id, string name, string middleName, string lastName, byte age, string sex, Department department, bool isValid, string message) ValidateData(object[] values)
         {
             var message = new StringBuilder();
             var isValid = true;
 
-            var name = values[0].ToString();
+            int.TryParse(values[0].ToString(), out int id);
+
+            var name = values[1].ToString();
             if (name.Length == 0)
             {
                 isValid = false;
                 message.AppendLine("Invalid name");
             }
-            var middleName = values[1].ToString();
+            var middleName = values[2].ToString();
             if (middleName.Length == 0)
             {
                 isValid = false;
                 message.AppendLine("Invalid middleName");
             }
-            var lastName = values[2].ToString();
+            var lastName = values[3].ToString();
             if (lastName.Length == 0)
             {
                 isValid = false;
                 message.AppendLine("Invalid lastName");
             }
 
-            if (!byte.TryParse(values[3].ToString(), out byte age) || age < 18)
+            if (!byte.TryParse(values[4].ToString(), out byte age) || age < 18)
             {
                 isValid = false;
                 message.AppendLine("Age cant be lower 18");
             }
-            var sex = values[4].ToString();
+            var sex = values[5].ToString();
             if (!sex.Equals("Мужской") && !sex.Equals("Женский"))
             {
                 isValid = false;
                 message.AppendLine("Invalid sex");
             }
-            var department = values[5] as BaseDepartment;
+            var department = values[6] as Department;
             if (department == null)
             {
                 isValid = false;
                 message.AppendLine("Invalid department");
             }
 
-            return (name, middleName, lastName, age, sex, department, isValid, message.ToString());
+            return (id, name, middleName, lastName, age, sex, department, isValid, message.ToString());
         }
         /// <summary>
         /// Метод запроса данных из Модели
         /// </summary>
         private void LoadData()
         {
-            Departments = new ObservableCollection<BaseDepartment>(dt.Departments);
-            Employees = new ObservableCollection<BaseEmployee>(dt.Employees);
+
+            ObservableCollection<Department> temp = new ObservableCollection<Department>();
+
+            foreach (Department item in emDB.Departments)
+            {               
+                temp.Add(item);
+            }
+            Departments = temp;
+            ObservableCollection<Model.Employee> temp1 = new ObservableCollection<Model.Employee>();
+            foreach (var item in emDB.Employees)
+            {
+                temp1.Add(item);
+            }
+            Employees = temp1;
         }
-        /// <summary>
-        /// Метод записи данных в Модель
-        /// </summary>
-        private void SaveData()
-        {
-            dt.SaveDepartments(Departments);
-            dt.SaveEmployees(Employees);
-            LoadData();
-        }
 
 
 
-        public ObservableCollection<BaseDepartment> Departments
+
+        public ObservableCollection<Department> Departments
         {
             get { return departments; }
             private set
@@ -260,9 +306,9 @@ namespace Employee.ViewModel
             }
         } 
 
-        public ObservableCollection<BaseEmployee> Employees { get; private set; } = new ObservableCollection<BaseEmployee>() { };
+        public ObservableCollection<Model.Employee> Employees { get; private set; } = new ObservableCollection<Model.Employee>() { };
 
-        public ObservableCollection<BaseEmployee> SelectedEmployees
+        public ObservableCollection<Model.Employee> SelectedEmployees
         {
             get { return selectedEmployees; }
             set
@@ -271,6 +317,8 @@ namespace Employee.ViewModel
                 OnPropertyChanged("SelectedEmployees");
             }
         }
+
+        public EmployeeEntities EmDB { get => emDB; set => emDB = value; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)

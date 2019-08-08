@@ -24,8 +24,8 @@ namespace Employee.Model
         readonly string departmentsPath = "Departments.txt";
         //Путь к файлу с данными о сотрудниках
         readonly string employeesPath = "Employees.txt";
-        
 
+        
         public List<BaseEmployee> Employees { get; private set; } = new List<BaseEmployee>() { };
         public List<BaseDepartment> Departments { get; private set; } = new List<BaseDepartment>() { };
 

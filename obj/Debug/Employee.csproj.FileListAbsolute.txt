@@ -14,3 +14,10 @@ D:\GitHub\Employee\obj\Debug\Employee.pdb
 D:\GitHub\Employee\obj\Debug\View\MainWindow.g.cs
 D:\GitHub\Employee\obj\Debug\View\MainWindow.baml
 D:\GitHub\Employee\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\GitHub\Employee\bin\Debug\EntityFramework.dll
+D:\GitHub\Employee\bin\Debug\EntityFramework.SqlServer.dll
+D:\GitHub\Employee\bin\Debug\EntityFramework.xml
+D:\GitHub\Employee\bin\Debug\EntityFramework.SqlServer.xml
+D:\GitHub\Employee\bin\Debug\ru\EntityFramework.resources.dll
+D:\GitHub\Employee\obj\Debug\Employee_Content.g.cs
+D:\GitHub\Employee\obj\Debug\Employee.csproj.CopyComplete
